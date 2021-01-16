@@ -1,0 +1,85 @@
+Q.Aterp is the head nurse at city hospital. City hospital contains R*C number of wards and structure of hospital is in the form of a 2-D matrix.
+Given a matrix of dimension R*C where each cell in the matrix can have values 0, 1 or 2 which has the following meaning:
+0 : Empty ward
+1 : Cells have uninfected patients
+2 : Cells have infected patients
+
+An infected patient at ward [i,j] can infect other uninfected patient at indexes [i-1,j], [i+1,j], [i,j-1], [i,j+1] (up, down, left and right) in unit time. Help Aterp determine the minimum units of time after which there won't remain any uninfected patient i.e all patients would be infected. If all patients are not infected after infinite units of time then simply return -1.
+
+sol:
+  class Solution{
+    public boolean inside(int[][] hospital,int r1,int c1){    // To check whether the point is valid or not
+        int R=hospital.length;
+        int C=hospital[0].length;
+        return(r1>=0 && r1<R && c1>=0 && c1<C && hospital[r1][c1]==1);
+    }
+    public int helpaterp(int[][] hospital) {
+        int length=hospital.length;
+        if(length==0){
+            return 0;
+        }
+        int r=hospital.length;
+        int c=hospital[0].length;
+        Queue<int[]> queue=new LinkedList<>();     // To store coordinates of cells having infected patient(2)
+        int uninfected=0;
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                if(hospital[i][j]==2){
+                    int[] coordinate=new int[2];
+                    coordinate[0]=i;
+                    coordinate[1]=j;
+                    queue.add(coordinate);
+                }
+                else if(hospital[i][j]==1){
+                   uninfected+=1;
+                }
+            }
+        }
+        if(uninfected==0){
+            return 0;
+        }
+        int[] row=new int[] {1,-1,0,0};
+        int[] col=new int[] {0,0,1,-1};
+        int time=0;
+        while(!queue.isEmpty()){
+            time+=1;
+            int m=queue.size();
+            for(int i=0;i<m;i++){
+                int[] infected=queue.poll();
+                for(int i1=0;i1<4;i1++){
+                    int r1=infected[0];
+                    int c1=infected[1];
+                    if(inside(hospital,r1+row[i1],c1+col[i1])){  
+                        hospital[r1+row[i1]][c1+col[i1]]=2;
+                        int [] neighbour=new int[2];
+                        neighbour[0]=r1+row[i1];
+                        neighbour[1]=c1+col[i1];
+                        queue.add(neighbour);         //Adding neighbour coordinates of cells having infected patients to queue
+                        uninfected-=1;
+                    }
+                    else{
+                        continue;
+                    }
+                }
+                
+            }
+        }
+        int totaltime=0;
+        if(uninfected==0){
+            totaltime=time-1;
+        }
+        else{
+            totaltime=-1;
+        }
+        return totaltime;
+    }
+  }
+
+Sample Input:
+3 5
+2 1 0 2 1
+0 0 1 2 1
+1 0 0 2 1
+
+Sample Output:
+-1
