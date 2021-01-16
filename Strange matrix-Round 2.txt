@@ -1,0 +1,25 @@
+Q.A[][] is a (R x C) boolean matrix  such that each of its element is either 0 or 1. Each row of the matrix is sorted. Find the index of the row which has the maximum number of ones. If there are multiple such rows then return the smallest index.
+An array B[] of size R is used to construct matrix A such that B[i] denotes the number of zeroes in the ith row.
+
+sol:
+  class Solution:
+    def get(self, i, j):
+      return a.get(i,j)
+      
+    def solve(self, R, C):
+        maxRow=0
+        row=0
+        col=C-1
+        while(row<=R-1 and col>=0):
+            if(self.get(row,col)==1):
+                maxRow=row
+                col-=1
+            else:
+                row=row+1
+        return maxRow
+
+Sample Input:
+R=3, C=3
+B[]={1, 0, 2} //denotes number of zeroes in each row
+
+Sample Output: 1
